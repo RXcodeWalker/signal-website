@@ -1,0 +1,210 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import BlogSearch from '../components/blog/BlogSearch.astro';
+import { estimateReadingMinutes, extractKeyIdeas, extractStrikingLine, formatReadingTime } from '../utils/postInsights';
+
+const dateValue = (value: string) => {
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
+const blogEntries = await getCollection('blog');
+const allPosts = blogEntries
+  .map((entry) => {
+    const markdownBody = entry.body ?? '';
+    const readingMinutes = estimateReadingMinutes(markdownBody);
+
+    return {
+      title: entry.data.title,
+      date: entry.data.date,
+      category: entry.data.category,
+      excerpt: entry.data.excerpt,
+      id: entry.data.id ?? entry.slug,
+      slug: entry.slug,
+      featured: entry.data.featured ?? false,
+      readTime: formatReadingTime(readingMinutes),
+      keyIdeas: extractKeyIdeas(markdownBody, 3),
+      strikingLine: extractStrikingLine(markdownBody, entry.data.excerpt),
+    };
+  })
+  .sort((a, b) => dateValue(b.date) - dateValue(a.date));
+
+const featuredPost = allPosts.find((post) => post.featured) ?? allPosts[0];
+const gridPosts = allPosts.filter((post) => post.id !== featuredPost?.id);
+const categories = [...new Set(allPosts.map((post) => post.category))].sort((a, b) => a.localeCompare(b));
+const postHref = (slug: string) => `/blog/${encodeURIComponent(slug)}`;
+---
+
+<BaseLayout title="Om's Blog" description="In-depth Arsenal analysis, tactical breakdowns, and football insights by Om Jhamvar.">
+  <main class="container main-content blog-page">
+    <PageHeader
+      eyebrow="Words & Thoughts"
+      title="My Blog"
+      description="Tactical analysis of sports and posts about personal growth, unfiltered and straight from the source."
+      useTypewriter={true}
+    />
+
+    <section class="newsletter-slot newsletter-slot-compact reveal" aria-label="Newsletter signup top">
+      <p><strong>Get new posts by email.</strong> Weekly writing on projects, books, music, and sports analysis.</p>
+      <a href="/contact" class="btn-primary">Subscribe</a>
+    </section>
+
+    <BlogSearch categories={categories} />
+
+    <section class="blog-index-shell">
+      {
+        featuredPost && (
+          <article class="featured-story glass-card glass-card-hover reveal" id="featured-story" data-featured-id={featuredPost.id}>
+            <div class="featured-story-copy">
+              <p class="featured-kicker">Lead Story</p>
+              <div class="featured-story-meta">
+                <span class="category-badge">{featuredPost.category}</span>
+                <span class="featured-story-date">{featuredPost.date}</span>
+              </div>
+              <h2>{featuredPost.title}</h2>
+              <p class="featured-story-excerpt">{featuredPost.excerpt}</p>
+
+              <div class="featured-story-footer">
+                <a href={postHref(featuredPost.slug)} class="featured-read-more">
+                  Read the full piece
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+                <p class="featured-story-note">A strong place to start if you want the tone of the archive fast.</p>
+              </div>
+            </div>
+
+            <div class="featured-story-side" aria-hidden="true">
+              <div class="featured-story-orb"></div>
+              <p class="featured-side-label">Editorial Pick</p>
+              <p class="featured-side-copy">
+                Selected as the lead read for this archive view. Expect a longer, sharper argument than the rest of the wall.
+              </p>
+              <div class="featured-side-stat">
+                <span>Archive</span>
+                <strong>{allPosts.length} stories</strong>
+              </div>
+            </div>
+          </article>
+        )
+      }
+
+      <div class="blog-grid-head reveal">
+        <div>
+          <p class="blog-grid-kicker">Archive Wall</p>
+          <h2>Recent writing, notes, and match breakdowns.</h2>
+        </div>
+        <p class="blog-results-summary" id="results-summary">
+          {gridPosts.length} supporting {gridPosts.length === 1 ? 'story' : 'stories'}
+        </p>
+      </div>
+
+      <div class="blog-grid" id="blog-grid">
+        {
+          gridPosts.map((post) => (
+            <article class="glass-card glass-card-hover blog-card" data-post-id={post.id}>
+              <p class="blog-card-kicker">From the notebook</p>
+              <h3>{post.title}</h3>
+
+              <div class="blog-meta">
+                <span class="category-badge">{post.category}</span>
+                <span class="blog-date">{post.date}</span>
+              </div>
+
+              <p class="blog-excerpt">{post.excerpt}</p>
+
+              <a href={postHref(post.slug)} class="read-more-btn">
+                Read More
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <section id="newsletter-signup" class="newsletter-slot newsletter-slot-strong reveal" aria-label="Newsletter signup bottom">
+        <div>
+          <p class="newsletter-kicker">Newsletter</p>
+          <h3>Build with me in public</h3>
+          <p>
+            I send focused updates on what I am building, what I am reading, and how I improve execution each week.
+          </p>
+        </div>
+        <div class="newsletter-cta-group">
+          <a href="/contact" class="btn-primary">Subscribe for updates</a>
+          <a href="/" class="btn-ghost">Back to home</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <style>
+    .newsletter-slot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-radius: var(--card-radius);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+    }
+    .newsletter-slot p {
+      margin: 0;
+      color: var(--muted-text);
+      line-height: 1.6;
+    }
+    .newsletter-slot-compact {
+      margin: 0 0 1.5rem;
+      padding: 1rem 1.25rem;
+    }
+    .newsletter-slot-strong {
+      margin-top: 2rem;
+      padding: 1.4rem;
+    }
+    .newsletter-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-1);
+      margin-bottom: 0.5rem;
+    }
+    .newsletter-slot-strong h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.35rem;
+      font-family: var(--font-display);
+    }
+    .newsletter-cta-group {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    @media (max-width: 768px) {
+      .newsletter-slot {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .newsletter-slot-compact,
+      .newsletter-slot-strong {
+        padding: 1rem;
+      }
+    }
+  </style>
+
+  <script is:inline define:vars={{ allPosts }}>
+    window.allPosts = allPosts;
+  </script>
+  <script is:inline src="/js/spectacular-shared.js"></script>
+  <script is:inline src="/js/blog.js"></script>
+  <script is:inline src="/js/utils/cursor.js"></script>
+</BaseLayout>
