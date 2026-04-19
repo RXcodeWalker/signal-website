@@ -376,3 +376,54 @@ html[data-theme="dark"] {
     --haptic-duration-out: 180ms;
   }
 }
+
+/* =========================================================
+   SIGNAL SYSTEM — animatable custom properties
+   These @property declarations enable CSS transitions on
+   custom properties, allowing GPU-composited animations.
+========================================================= */
+@property --signal-phase {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+@property --signal-clarity {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+@property --glitch-intensity {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
+@property --signal-entropy {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+@property --temporal-luminance {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+
+:root {
+  /* Signal state — written by state.js every RAF frame */
+  --signal-phase: 0;
+  --signal-clarity: 1;
+  --signal-velocity: 0;
+  --signal-entropy: 0;
+  --viewer-seed: 0.5;
+
+  /* Temporal identity — set once on load based on time of day */
+  --signal-time-band: "day";
+  --temporal-hue-shift: 0deg;
+  --temporal-noise-freq: 0.82;
+  --temporal-luminance: 1;
+
+  /* Distortion layer */
+  --glitch-intensity: 0;
+  --scanline-opacity: 0;
+  --noise-opacity: 0.04;
+}

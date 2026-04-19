@@ -5,6 +5,7 @@
   =============================================================
 */
 
+@import "./tokens.css";
 @import "./style.css";
 @import "./spectacular.css";
 @import "./interactions.css";
@@ -13,6 +14,9 @@
 @import "./blog-list.css";
 @import "./blog-post.css";
 @import "./blog-spectacular.css";
+/* Signal layer — loaded last so its tokens and rules take precedence */
+@import "./signal.css";
+@import "./layers.css";
 
 /* 
   Global variables used across the site

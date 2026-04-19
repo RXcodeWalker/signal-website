@@ -1,68 +1,334 @@
-<header class="site-header" id="header">
-    <style>
-      /* Quick fix to make links and buttons align perfectly on one row */
-      .main-nav { display: flex; align-items: center; justify-content: space-between; }
-      .nav-links { margin: 0; padding: 0; display: flex; align-items: center; }
-    </style>
-    
-    <div class="container">
-      <nav class="main-nav">
+<header class="site-header signal-nav" id="header">
+  <div class="container">
+    <nav class="main-nav">
 
-        <a href="/" class="brand" style="text-decoration:none;">Beyond The Basics</a>
+      <a href="/" class="brand signal-brand signal-magnetic" aria-label="Signal // BTB home">
+        <span class="brand-signal">SIGNAL</span>
+        <span class="brand-sep">//</span>
+        <span class="brand-mark">BTB</span>
+        <span class="brand-pulse" aria-hidden="true"></span>
+      </a>
 
-        <ul class="nav-links" id="mobile-menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/projects">Projects</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/#newsletter-signup">Subscribe</a></li>
-        </ul>
+      <ul class="nav-links" id="mobile-menu">
+        <li><a href="/" class="signal-magnetic" data-nav-index="01">Home</a></li>
+        <li><a href="/blog" class="signal-magnetic" data-nav-index="02">Blog</a></li>
+        <li><a href="/projects" class="signal-magnetic" data-nav-index="03">Projects</a></li>
+        <li><a href="/about" class="signal-magnetic" data-nav-index="04">About</a></li>
+        <li><a href="/#newsletter-signup" class="signal-magnetic" data-nav-index="05">Subscribe</a></li>
+      </ul>
 
-        <div class="nav-right">
-          
-          <button id="cursor-toggle" class="theme-btn cursor-btn" aria-label="Toggle cursor" title="Toggle custom cursor">
-            <svg class="cursor-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4l7.07 17 2.51-7.39L21 11.07z"/>
-            </svg>
-          </button>
+      <div class="nav-right">
 
-          <button id="ambient-toggle" class="theme-btn ambient-btn" aria-label="Toggle ambient sound" title="Toggle ambient sound">
-            <svg class="headphone-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-            </svg>
-            <div class="eq-bars">
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-              <div class="eq-bar"></div>
-            </div>
-          </button>
-
-          <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
-            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
-
-          <button
-            class="menu-toggle"
-            id="menu-toggle"
-            aria-label="Toggle menu"
-            aria-controls="mobile-menu"
-            aria-expanded="false"
-          >
-            <span></span><span></span><span></span>
-          </button>
+        <div class="signal-readout" aria-hidden="true">
+          <span class="readout-dot"></span>
+          <span class="readout-text">TUNED</span>
         </div>
 
-      </nav>
-    </div>
+        <button id="cursor-toggle" class="theme-btn cursor-btn signal-magnetic" aria-label="Toggle cursor" title="Toggle probe cursor">
+          <svg class="cursor-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4l7.07 17 2.51-7.39L21 11.07z"/>
+          </svg>
+        </button>
+
+        <button id="ambient-toggle" class="theme-btn ambient-btn signal-magnetic" aria-label="Toggle ambient sound" title="Toggle ambient signal">
+          <svg class="headphone-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+          </svg>
+          <div class="eq-bars">
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+            <div class="eq-bar"></div>
+          </div>
+        </button>
+
+        <button id="theme-toggle" class="theme-btn signal-magnetic" aria-label="Toggle dark mode">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button
+          class="menu-toggle signal-magnetic"
+          id="menu-toggle"
+          aria-label="Toggle menu"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+    </nav>
+  </div>
 </header>
 <div id="nav-backdrop" aria-hidden="true"></div>
+
+<style>
+  .signal-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0.9rem 0;
+    background: color-mix(in srgb, var(--bg-color) 55%, transparent);
+    backdrop-filter: blur(18px) saturate(1.15);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-1) 12%, transparent);
+    transition:
+      background 300ms ease,
+      border-color 300ms ease,
+      padding 300ms var(--ease-spring),
+      transform 400ms var(--ease-spring);
+    opacity: calc(0.35 + var(--signal-clarity, 1) * 0.65);
+  }
+
+  .signal-nav.scrolled {
+    padding: 0.55rem 0;
+    background: color-mix(in srgb, var(--bg-color) 78%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--accent-1) 22%, transparent);
+  }
+
+  .signal-nav .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 3vw, 2rem);
+  }
+
+  .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  /* Brand */
+  .signal-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--accent-1) 18%, transparent);
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--bg-color) 40%, transparent);
+    position: relative;
+    transition:
+      border-color 260ms ease,
+      background 260ms ease,
+      color 260ms ease,
+      transform 260ms var(--ease-spring);
+  }
+
+  .signal-brand:hover {
+    border-color: color-mix(in srgb, var(--accent-1) 45%, transparent);
+    color: var(--accent-1);
+  }
+
+  .brand-sep {
+    color: color-mix(in srgb, var(--accent-1) 70%, var(--muted-text));
+    font-weight: 600;
+  }
+
+  .brand-mark {
+    color: var(--accent-1);
+    font-weight: 600;
+  }
+
+  .brand-pulse {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-1) 60%, transparent);
+    animation: brandPulse 2400ms ease-in-out infinite;
+    margin-left: 0.25rem;
+  }
+
+  @keyframes brandPulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-1) 55%, transparent);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-1) 0%, transparent);
+      transform: scale(1.35);
+    }
+  }
+
+  /* Nav links */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.55rem 0.95rem;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--muted-text);
+    text-decoration: none;
+    border-radius: 100px;
+    transition:
+      color 240ms ease,
+      background 240ms ease,
+      transform 240ms var(--ease-spring);
+  }
+
+  .nav-links a::before {
+    content: attr(data-nav-index);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: color-mix(in srgb, var(--accent-1) 65%, transparent);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 260ms ease, transform 260ms var(--ease-spring);
+  }
+
+  .nav-links a:hover {
+    color: var(--text-color);
+    background: color-mix(in srgb, var(--accent-1) 8%, transparent);
+  }
+
+  .nav-links a:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Signal readout */
+  .signal-readout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--accent-2) 24%, transparent);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    color: var(--muted-text);
+    background: color-mix(in srgb, var(--bg-color) 30%, transparent);
+    margin-right: 0.35rem;
+  }
+
+  .readout-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent-2) 80%, transparent);
+    animation: readoutBlink 1800ms ease-in-out infinite;
+  }
+
+  @keyframes readoutBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .readout-text {
+    color: color-mix(in srgb, var(--accent-2) 85%, var(--text-color));
+    font-weight: 500;
+  }
+
+  /* Right group */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Mobile */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .menu-toggle span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--text-color);
+    border-radius: 2px;
+    transition: transform 280ms var(--ease-spring), opacity 200ms ease;
+  }
+
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+
+  @media (max-width: 860px) {
+    .signal-readout { display: none; }
+    .nav-links {
+      position: fixed;
+      inset: 0;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      background: color-mix(in srgb, var(--bg-color) 94%, transparent);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 420ms var(--ease-spring), opacity 300ms ease;
+      z-index: 49;
+    }
+    .nav-links.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .nav-links a {
+      font-size: 1.4rem;
+      padding: 0.85rem 1.4rem;
+    }
+    .nav-links a::before {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .menu-toggle { display: flex; z-index: 51; position: relative; }
+  }
+
+  @media (max-width: 480px) {
+    .signal-brand { font-size: 0.74rem; padding: 0.4rem 0.6rem; }
+    .brand-pulse { display: none; }
+  }
+</style>

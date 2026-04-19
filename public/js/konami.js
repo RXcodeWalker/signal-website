@@ -59,6 +59,10 @@
 
   // ── 3. Main launcher ─────────────────────────────────
   function launchEasterEgg() {
+    // Register with signal state if available
+    var state = window.BTB && window.BTB.signal && window.BTB.signal.state;
+    if (state) state.activateTrigger('S01');
+
     injectStyles();
     buildModal();
     fireConfetti();

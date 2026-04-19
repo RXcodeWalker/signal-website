@@ -1,268 +1,429 @@
 ---
+// Signal Entry — Scene 1
+// Title characters are split at build-time so no runtime layout shift occurs.
+const eyebrow = "SIGNAL // BTB";
+const title = "BEYOND THE BASICS";
+const subtitle = `A transmission from a mind that doesn't sit still — <em>football tactics, code, books, music, growth</em> — tuned weekly.`;
+
+// Split title into per-char spans for the reveal
+function splitChars(str: string) {
+  return str.split(' ').map((word) => ({
+    word,
+    chars: Array.from(word),
+  }));
+}
+
+const titleWords = splitChars(title);
 ---
-<section class="hero-spectacular">
-  <canvas id="hero-canvas"></canvas>
-  <div class="container">
-    <div class="hero-eyebrow">Learning · Music  · Code · Growth · Sports</div>
-    <h1 class="hero-title">Beyond The Basics</h1>
-    <div class="hero-roles">
-      <span id="hero-static">Created by an 11th grader who </span>
-      <span class="typewriter-text" id="typewriter"></span><span class="cursor">|</span>
+
+<section class="signal-entry" id="signal-entry" data-scene="1">
+  <div class="signal-entry-inner">
+    <div class="signal-text-layer">
+
+      <div class="signal-label signal-magnetic">
+        <span>{eyebrow}</span>
+        <span class="signal-label-channel">CH.047</span>
+      </div>
+
+      <h1 class="signal-title" aria-label={title}>
+        {titleWords.map((word, wi) => {
+          let charIndex = 0;
+          // Build the absolute char index offset including prior words
+          const offset = titleWords.slice(0, wi).reduce((n, w) => n + w.chars.length, 0);
+          return (
+            <span class="signal-word">
+              {word.chars.map((ch, ci) => (
+                <span
+                  class="signal-char"
+                  data-char={ch}
+                  data-char-index={offset + ci}
+                  style={`--char-index: ${offset + ci}`}
+                  aria-hidden="true"
+                >{ch}</span>
+              ))}
+            </span>
+          );
+        })}
+      </h1>
+
+      <p class="signal-subtitle" set:html={subtitle}></p>
+
+      <div class="signal-cta-group">
+        <a href="/blog" class="btn-primary signal-magnetic">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M4 4l7.07 17 2.51-7.39L21 11.07z"/>
+          </svg>
+          Tune In to the Blog
+        </a>
+        <a href="/about" class="btn-ghost signal-magnetic">
+          Decode the Signal
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
     </div>
-    <div class="hero-cta-group">
-      <a href="/blog" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-        </svg>
-        Read the Blog
-      </a>
-      <a href="/about" class="btn-ghost">
-        About Me
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
-    </div>
+
+    <!-- Hidden trigger zone T01 — bottom-right corner, 60x60px -->
+    <div class="trigger-zone" data-trigger-id="T01" aria-hidden="true"
+         style="bottom: 0; right: 0; width: 60px; height: 60px; position: absolute;"></div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint" aria-hidden="true">
+    <span>scroll to tune</span>
+    <div class="scroll-hint-line"></div>
   </div>
 </section>
 
 <style>
-  /* ---- Hero Canvas ---- */
-  #hero-canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0.8;
-  }
-
-  /* ---- HERO SECTION ---- */
-  .hero-spectacular {
+  .signal-entry {
     position: relative;
-    height: auto;
-    min-height: 0;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    width: 100%;
     overflow: hidden;
-    text-align: center;
-    margin: 0;
-    padding: 3.2rem 0 2.5rem;
   }
 
-  .hero-spectacular .container {
+  .signal-entry-inner {
     position: relative;
-    z-index: 2;
+    width: 100%;
+    max-width: 1040px;
+    padding: 0 clamp(1rem, 4vw, 2rem);
+    text-align: center;
+    z-index: 10;
   }
 
-  .hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--accent-1);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: heroReveal 0.8s ease 0.2s forwards;
+  /* Additional label extras */
+  .signal-label {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-  }
-  .hero-eyebrow::before, .hero-eyebrow::after {
-    content: '';
-    width: 40px;
-    height: 1px;
-    background: var(--accent-1);
-    opacity: 0.6;
-  }
-
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 7vw, 6rem);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 200% auto;
-    animation: gradientShift 6s ease infinite, heroReveal 0.8s ease 0.4s both;
-    margin-bottom: 1.5rem;
+    gap: 1.2rem;
+    padding: 0.55rem 1rem;
+    border-radius: 100px;
+    border: 1px solid color-mix(in srgb, var(--accent-1) 30%, transparent);
+    background: color-mix(in srgb, var(--bg-color) 60%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
-  .hero-roles {
-    font-family: var(--font-body);
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
-    font-weight: 300;
+  .signal-label-channel {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
     color: var(--muted-text);
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: heroReveal 0.8s ease 0.6s forwards;
-    height: 2rem;
+    padding-left: 1rem;
+    border-left: 1px solid color-mix(in srgb, var(--accent-1) 40%, transparent);
   }
 
-  .hero-roles .typewriter-text {
+  .signal-label::before { opacity: 0; display: none; }
+  .signal-label::after { position: relative; left: 0; }
+
+  /* Polished CTA buttons */
+  .signal-cta-group .btn-primary,
+  .signal-cta-group .btn-ghost {
+    padding: 0.95rem 1.6rem;
+    border-radius: 100px;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    transition:
+      transform 280ms var(--ease-spring),
+      box-shadow 280ms ease,
+      background 280ms ease,
+      border-color 280ms ease,
+      filter 280ms ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .signal-cta-group .btn-primary {
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    color: var(--btn-primary-text);
+    box-shadow: var(--btn-primary-shadow);
+    border: 1px solid transparent;
+  }
+
+  .signal-cta-group .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-1) 90%, white), color-mix(in srgb, var(--accent-2) 90%, white));
+    opacity: 0;
+    transition: opacity 280ms ease;
+  }
+
+  .signal-cta-group .btn-primary:hover::before { opacity: 1; }
+  .signal-cta-group .btn-primary > * { position: relative; z-index: 1; }
+
+  .signal-cta-group .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--btn-primary-shadow-hover);
+  }
+
+  .signal-cta-group .btn-ghost {
+    background: var(--btn-ghost-bg);
+    border: 1px solid var(--btn-ghost-border);
     color: var(--text-color);
-    font-weight: 500;
   }
 
-  .hero-cta-group {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: heroReveal 0.8s ease 0.8s forwards;
+  .signal-cta-group .btn-ghost:hover {
+    background: var(--btn-ghost-hover-bg);
+    border-color: var(--btn-ghost-hover-border);
+    box-shadow: var(--btn-ghost-hover-shadow);
+    transform: translateY(-2px);
   }
 
-  @keyframes heroReveal {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 768px) {
-    .hero-spectacular {
-      height: auto !important;
-      min-height: 0 !important;
-      padding: 1.35rem 0 0.95rem !important;
-    }
-    .hero-title { font-size: 3rem !important; margin-bottom: 1rem !important; }
-    .hero-roles { margin-bottom: 1.5rem !important; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #hero-canvas {
-      opacity: 0.55;
-      filter: saturate(108%) contrast(104%);
-    }
-
-    .hero-eyebrow,
-    .hero-title,
-    .hero-roles,
-    .hero-cta-group {
-      animation: none !important;
-      opacity: 1;
-      transform: none;
-    }
-
-    .hero-title {
-      background-size: 100% auto;
-    }
-
-    .cursor {
-      animation: none;
-      opacity: 0.75;
-    }
+  @media (max-width: 640px) {
+    .signal-entry-inner { padding: 0 1rem; }
+    .signal-label-channel { font-size: 0.55rem; }
+    .signal-cta-group { flex-direction: column; width: 100%; }
+    .signal-cta-group .btn-primary,
+    .signal-cta-group .btn-ghost { justify-content: center; width: 100%; }
   }
 </style>
 
 <script is:inline>
+  /*
+    Signal Entry — character-level reveal orchestrator.
+    Listens to signal:stable + subscribes to --signal-phase via
+    requestAnimationFrame polling to drive per-char progress.
+  */
   (() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const chars = Array.from(document.querySelectorAll('#signal-entry .signal-char'));
+    if (!chars.length) return;
 
-    // HERO CANVAS
-    const heroCanvas = document.getElementById('hero-canvas');
-    if (heroCanvas) {
-      const hCtx = heroCanvas.getContext('2d');
-      function resizeHeroCanvas() {
-        heroCanvas.width = heroCanvas.offsetWidth;
-        heroCanvas.height = heroCanvas.offsetHeight;
-      }
-      resizeHeroCanvas();
-      window.addEventListener('resize', resizeHeroCanvas);
+    const total = chars.length;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function drawPitch(ctx, w, h) {
-        ctx.clearRect(0, 0, w, h);
-        ctx.strokeStyle = 'rgba(76, 201, 240, 0.07)';
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(w/2, h/2, Math.min(w,h)*0.18, 0, Math.PI*2); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(w/2, 0); ctx.lineTo(w/2, h); ctx.stroke();
-        const pad = 20; ctx.strokeRect(pad, pad, w-pad*2, h-pad*2);
-        const pw = w*0.18, ph = h*0.45;
-        ctx.strokeRect(pad, (h-ph)/2, pw, ph); ctx.strokeRect(w-pad-pw, (h-ph)/2, pw, ph);
-      }
-
-      const particles = Array.from({length: 60}, () => ({
-        x: Math.random() * 800, y: Math.random() * 500, r: Math.random() * 2 + 0.5,
-        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
-        alpha: Math.random() * 0.3 + 0.05, color: Math.random() > 0.5 ? '76,201,240' : '138,79,255'
-      }));
-
-      let heroMouseX = 0, heroMouseY = 0;
-      document.addEventListener('mousemove', e => {
-        const rect = heroCanvas.getBoundingClientRect();
-        heroMouseX = e.clientX - rect.left;
-        heroMouseY = e.clientY - rect.top;
+    if (reduced) {
+      chars.forEach(c => {
+        c.style.setProperty('--char-progress', '1');
+        c.style.setProperty('--char-opacity', '1');
       });
-
-      function animateHero() {
-        const w = heroCanvas.width, h = heroCanvas.height;
-        hCtx.clearRect(0, 0, w, h);
-        drawPitch(hCtx, w, h);
-        particles.forEach(p => {
-          const dx = p.x - heroMouseX, dy = p.y - heroMouseY;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 80) { p.vx += (dx / dist) * 0.1; p.vy += (dy / dist) * 0.1; }
-          p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.vy *= 0.99;
-          if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1;
-          hCtx.beginPath(); hCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          hCtx.fillStyle = `rgba(${p.color}, ${p.alpha})`; hCtx.fill();
-        });
-        requestAnimationFrame(animateHero);
-      }
-      if (reducedMotion) {
-        const w = heroCanvas.width;
-        const h = heroCanvas.height;
-        hCtx.clearRect(0, 0, w, h);
-        drawPitch(hCtx, w, h);
-        particles.slice(0, 28).forEach(p => {
-          hCtx.beginPath();
-          hCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          hCtx.fillStyle = `rgba(${p.color}, ${Math.min(p.alpha + 0.08, 0.28)})`;
-          hCtx.fill();
-        });
-      } else {
-        animateHero();
-      }
-    }
-
-    // TYPEWRITER
-    const phrases = [
-      'ships coding and robotics builds',
-      'writes project breakdowns every week',
-      'extracts and discusses key lessons from books',
-      'performs guitar, piano, and vocals live',
-      'studies tactics across F1, football and other sports',
-      'is building a serious newsletter brand'
-    ];
-    let phraseIdx = 0, charIdx = 0, isDeleting = false;
-    const tw = document.getElementById('typewriter');
-
-    if (reducedMotion) {
-      if (tw) tw.textContent = phrases[0];
       return;
     }
 
-    function typeWriter() {
-      if (!tw) return;
-      const phrase = phrases[phraseIdx];
-      if (isDeleting) {
-        charIdx--;
-        tw.textContent = phrase.substring(0, charIdx);
-        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeWriter, 180); return; }
-        setTimeout(typeWriter, 28);
-      } else {
-        charIdx++;
-        tw.textContent = phrase.substring(0, charIdx);
-        if (charIdx === phrase.length) { isDeleting = true; setTimeout(typeWriter, 850); return; }
-        setTimeout(typeWriter, 42);
+    // Initial state — all chars invisible
+    chars.forEach((c, i) => {
+      c.style.setProperty('--char-progress', '0');
+      c.style.setProperty('--char-opacity', '0');
+    });
+
+    // Drive char reveal from signalPhase. Each character has its own
+    // per-character phase that starts progressing once the overall
+    // signalPhase crosses a threshold based on its index.
+    function frame() {
+      const phase = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--signal-phase')
+      ) || 0;
+      // Map overall phase to per-char progress with stagger
+      // First char reveals when phase=0.08, last at phase=0.95
+      for (let i = 0; i < total; i++) {
+        const charStart = 0.08 + (i / total) * 0.72;
+        const charEnd = charStart + 0.22;
+        const raw = (phase - charStart) / (charEnd - charStart);
+        const clamped = Math.max(0, Math.min(1, raw));
+        // Cubic ease-out
+        const eased = 1 - Math.pow(1 - clamped, 3);
+        chars[i].style.setProperty('--char-progress', eased.toFixed(3));
+        chars[i].style.setProperty('--char-opacity', eased.toFixed(3));
+      }
+      if (phase < 1) requestAnimationFrame(frame);
+      else {
+        // Final state — remove custom prop to let default take over
+        chars.forEach(c => {
+          c.style.setProperty('--char-progress', '1');
+          c.style.setProperty('--char-opacity', '1');
+        });
       }
     }
-    setTimeout(typeWriter, 500);
+    requestAnimationFrame(frame);
+
+    // --- Trigger T02 — triple-click the title in under 2s ---
+    const title = document.querySelector('.signal-title');
+    if (title && window.BTB?.signal?.state) {
+      let clicks = [];
+      title.addEventListener('click', () => {
+        const now = performance.now();
+        clicks.push(now);
+        clicks = clicks.filter(t => now - t < 2000);
+        if (clicks.length >= 3) {
+          clicks = [];
+          if (window.BTB.signal.state.activateTrigger('T02')) {
+            const chars = title.querySelectorAll('.signal-char');
+            const original = [];
+            chars.forEach((c) => {
+              original.push(c.textContent);
+              c.textContent = String.fromCharCode(33 + Math.floor(Math.random() * 90));
+            });
+            setTimeout(() => {
+              chars.forEach((c, i) => c.textContent = original[i]);
+            }, 600);
+          }
+        }
+      });
+    }
+
+    // --- Trigger T01 — hover bottom-right corner 1.5s ---
+    const t01 = document.querySelector('.trigger-zone[data-trigger-id="T01"]');
+    if (t01 && window.BTB?.signal?.state) {
+      let hoverTimer = null;
+      t01.addEventListener('mouseenter', () => {
+        hoverTimer = setTimeout(() => {
+          if (window.BTB.signal.state.activateTrigger('T01')) {
+            showCornerMessage();
+          }
+        }, 1500);
+      });
+      t01.addEventListener('mouseleave', () => {
+        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+      });
+    }
+
+    function showCornerMessage() {
+      // --- Particle letterform: "still here?" assembles from chaos ---
+      const PARTICLE_COUNT = 200;
+      const TEXT = 'still here?';
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+
+      // Create offscreen canvas to get glyph positions
+      const offscreen = document.createElement('canvas');
+      offscreen.width = 320;
+      offscreen.height = 40;
+      const octx = offscreen.getContext('2d');
+      octx.fillStyle = '#fff';
+      octx.font = '600 22px "JetBrains Mono", monospace';
+      octx.textBaseline = 'middle';
+      octx.fillText(TEXT, 10, 20);
+
+      // Sample white pixels to get target positions
+      const imageData = octx.getImageData(0, 0, 320, 40);
+      const targets = [];
+      for (let y = 0; y < 40; y += 2) {
+        for (let x = 0; x < 320; x += 2) {
+          const idx = (y * 320 + x) * 4;
+          if (imageData.data[idx] > 128) {
+            targets.push({ x, y });
+          }
+        }
+      }
+
+      // Distribute particles to target positions
+      const stride = Math.max(1, Math.floor(targets.length / PARTICLE_COUNT));
+      const selected = [];
+      for (let i = 0; i < targets.length && selected.length < PARTICLE_COUNT; i += stride) {
+        selected.push(targets[i]);
+      }
+
+      // Origin point: bottom-right of screen
+      const originX = W - 100;
+      const originY = H - 60;
+      const offsetX = W - 360;
+      const offsetY = H - 80;
+
+      // Create particle canvas
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = W;
+      pCanvas.height = H;
+      pCanvas.style.cssText = `
+        position: fixed; inset: 0;
+        width: 100vw; height: 100vh;
+        z-index: 9999; pointer-events: none;
+        opacity: 0; transition: opacity 400ms ease;
+      `;
+      document.body.appendChild(pCanvas);
+      requestAnimationFrame(() => { pCanvas.style.opacity = '1'; });
+
+      const pctx = pCanvas.getContext('2d');
+
+      // Particles: start scattered, converge to glyph positions
+      const cs = getComputedStyle(document.documentElement);
+      const accent = cs.getPropertyValue('--accent-1').trim() || '#4cc9f0';
+
+      const particles = selected.map(t => ({
+        x: originX + (Math.random() - 0.5) * 300,
+        y: originY + (Math.random() - 0.5) * 200,
+        tx: offsetX + t.x,
+        ty: offsetY + t.y,
+        vx: 0, vy: 0,
+        size: 1.2 + Math.random() * 1.5,
+      }));
+
+      const startT = performance.now();
+      const DURATION = 2400;
+      const ASSEMBLE = 1200;  // time to reach targets
+      const HOLD = 800;       // time to hold
+      const DISSOLVE = 400;   // fade out
+
+      function animate(now) {
+        const elapsed = now - startT;
+        if (elapsed > DURATION) {
+          pCanvas.style.opacity = '0';
+          setTimeout(() => pCanvas.remove(), 500);
+          return;
+        }
+
+        pctx.clearRect(0, 0, W, H);
+
+        const phase = Math.min(1, elapsed / ASSEMBLE);
+        // Quartic ease-out
+        const ease = 1 - Math.pow(1 - phase, 4);
+        const dissolvePhase = elapsed > (ASSEMBLE + HOLD)
+          ? (elapsed - ASSEMBLE - HOLD) / DISSOLVE
+          : 0;
+
+        for (const p of particles) {
+          // Spring toward target
+          const dx = p.tx - p.x;
+          const dy = p.ty - p.y;
+          p.vx += dx * 0.08 * ease;
+          p.vy += dy * 0.08 * ease;
+          p.vx *= 0.82;
+          p.vy *= 0.82;
+
+          // Add noise when not yet assembled
+          if (phase < 0.8) {
+            p.vx += (Math.random() - 0.5) * (1 - ease) * 4;
+            p.vy += (Math.random() - 0.5) * (1 - ease) * 4;
+          }
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          const alpha = Math.max(0, (0.5 + ease * 0.5) * (1 - dissolvePhase));
+          const glow = phase > 0.6 ? (phase - 0.6) * 2.5 : 0;
+
+          pctx.beginPath();
+          pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          pctx.fillStyle = accent;
+          pctx.globalAlpha = alpha;
+          pctx.fill();
+
+          if (glow > 0) {
+            pctx.beginPath();
+            pctx.arc(p.x, p.y, p.size + 3, 0, Math.PI * 2);
+            pctx.fillStyle = accent;
+            pctx.globalAlpha = alpha * glow * 0.3;
+            pctx.fill();
+          }
+        }
+
+        pctx.globalAlpha = 1;
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    }
   })();
 </script>

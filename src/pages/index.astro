@@ -1,277 +1,857 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import Marquee from '../components/Marquee.astro';
-import Stats from '../components/Stats.astro';
-import Skills from '../components/Skills.astro';
-import AboutStrip from '../components/AboutStrip.astro';
-import WelcomeCTA from '../components/WelcomeCTA.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
-const latestPost = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0];
+const sorted = allPosts.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const latestPost = sorted[0];
+const recentPosts = sorted.slice(0, 3);
+
+const stats = [
+  { label: 'matches analyzed', value: '47', suffix: 'fixtures', accent: '--accent-1' },
+  { label: 'projects shipped', value: '12', suffix: 'in the wild', accent: '--accent-2' },
+  { label: 'posts published', value: String(allPosts.length), suffix: 'transmissions', accent: '--accent-3' },
+  { label: 'instruments', value: '3', suffix: 'guitar · piano · voice', accent: '--accent-1' },
+];
+
+const depthNodes = [
+  {
+    tag: 'LAYER 01 · SPORT',
+    heading: 'Football tactics, broken down.',
+    body: 'I write about what actually won the game — pressing triggers, build-up patterns, positional rotations. Arsenal, Arteta, and the long road back.',
+    href: '/blog?category=football',
+    cta: 'Read the tactical breakdowns',
+  },
+  {
+    tag: 'LAYER 02 · CODE',
+    heading: 'Building with signals and systems.',
+    body: 'Robotics, Python projects, web experiments. I ship things that work and publish the ugly parts too — because the learning is in the ugly parts.',
+    href: '/projects',
+    cta: 'See the projects',
+  },
+  {
+    tag: 'LAYER 03 · MUSIC',
+    heading: 'Guitar, piano, voice — live.',
+    body: 'Performing, arranging, and listening closely. Music shapes how I think about tempo in writing and timing in tactics.',
+    href: '/about',
+    cta: 'The performance archive',
+  },
+  {
+    tag: 'LAYER 04 · BOOKS',
+    heading: 'Books that rewired how I think.',
+    body: 'Weekly extraction of the key ideas. I don\'t summarize — I argue with the author and steal what\'s useful.',
+    href: '/blog?category=books',
+    cta: 'Read the reading notes',
+  },
+];
 ---
 
-<BaseLayout title="Om — Home">
-  
-  <Hero />
-  <Marquee />
+<BaseLayout title="Signal // BTB — A transmission from a mind that doesn't sit still">
 
-  <main class="container main-content home-main">
-    
-    <!-- LATEST BLOG DROPS -->
-    <section class="section" data-handshake style="margin:1rem; padding:1rem; align-content: center;">
-      <div class="section-label">Fresh Off The Press</div>
-      <h2 class="section-heading hs-heading"><span>Latest drops</span></h2>
+  <main id="signal-container">
 
-      <div class="featured-grid" >
-        <div class="feature-card tilt-card" id="latest-post-card">
-          <div class="card-shine"></div>
-          <div class="feature-card-accent"></div>
-          <div class="feature-card-tag">Latest Post</div>
-          <div id="latest-post-inner">
-            {latestPost ? (
-              <>
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin-bottom:0.75rem;">{latestPost.data.title}</h3>
-                <div class="blog-meta">
-                  <span class="category-badge">{latestPost.data.category}</span>
-                  <span class="blog-date">{latestPost.data.date}</span>
-                </div>
-                <p class="text-muted" style="font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem;">{latestPost.data.excerpt}</p>
-                <a href={`/blog/${latestPost.slug}`} class="feature-card-arrow">
-                  Read post
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </>
-            ) : (
-              <h3>No posts found.</h3>
-            )}
-          </div>
+    <!-- ============================================
+         SCENE 1 — SIGNAL ENTRY
+         Hero section: WebGL + character-split title
+         ============================================ -->
+    <Hero />
+
+    <!-- ============================================
+         SCENE 2 — SIGNAL IDENTITY
+         Who is the signal? What does it transmit?
+         ============================================ -->
+    <section class="scene-identity" data-scene="2">
+      <div class="scene-inner scene-inner-narrow">
+
+        <div class="scene-header">
+          <div class="scene-number">02 / IDENTITY</div>
+          <h2 class="scene-heading">
+            This isn't a portfolio.<br/>
+            It's a <em>broadcast</em>.
+          </h2>
         </div>
+
+        <p class="identity-paragraph">
+          I'm <strong>Om</strong>. I'm a 10th grader obsessed with the moments when things <em>click</em>
+          — a tactical pattern, a loop of code that finally runs, a chord change that doesn't sound like anything else.
+        </p>
+        <p class="identity-paragraph">
+          I write because I notice too much to keep it all in my head.
+          I build because I need to see how ideas break when they meet reality.
+          <em data-reading-ghost-source>I perform because silence gets loud.</em>
+        </p>
+
+        <div class="identity-stats">
+          {stats.map(s => (
+            <div class="identity-stat" style={`--accent-local: var(${s.accent})`}>
+              <div class="identity-stat-value">{s.value}</div>
+              <div class="identity-stat-label">{s.label}</div>
+              <div class="identity-stat-sub">{s.suffix}</div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
 
-    <section id="newsletter-signup" class="section newsletter-home-section" data-handshake aria-label="Newsletter signup">
-      <div class="feature-card newsletter-home-card">
-        <div class="feature-card-accent newsletter-home-accent"></div>
-        <div class="newsletter-home-copy">
-          <div class="feature-card-tag">Newsletter</div>
-          <h3>Get new posts in your inbox</h3>
-          <p class="text-muted">
-            Weekly notes on coding, robotics, books, music, and sports analysis. No spam, just sharp ideas and real progress.
+    <!-- ============================================
+         SCENE 3 — LAYERED CONTENT
+         Four "layers" of what I transmit
+         ============================================ -->
+    <section class="scene-layers" data-scene="3">
+      <div class="scene-inner scene-inner-wide">
+
+        <div class="scene-header">
+          <div class="scene-number">03 / LAYERS</div>
+          <h2 class="scene-heading">
+            Tune into any <em>frequency</em>.
+          </h2>
+          <p class="scene-lede">
+            Four bands. Each its own thing. None of them separate.
           </p>
         </div>
-        <div class="newsletter-home-actions">
-          <a href="/blog" class="btn-primary">Read recent posts</a>
-          <a href="/contact" class="btn-ghost">Subscribe via email</a>
+
+        <div class="depth-grid">
+          {depthNodes.map((node, i) => (
+            <article class={`depth-tile signal-magnetic ${i === 0 ? 'depth-tile-half' : i === 1 ? 'depth-tile-half' : i === 2 ? 'depth-tile-third' : 'depth-tile-third'}`}>
+              <div class="depth-tile-tag">{node.tag}</div>
+              <h3 class="depth-tile-heading">{node.heading}</h3>
+              <p class="depth-tile-body">{node.body}</p>
+              <a href={node.href} class="depth-tile-arrow">
+                {node.cta}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </article>
+          ))}
+
+          <!-- Constellation canvas (interests network) -->
+          <article class="depth-tile depth-tile-wide constellation-tile signal-magnetic">
+            <div class="depth-tile-tag">INTERCONNECT</div>
+            <h3 class="depth-tile-heading">These aren't separate systems.</h3>
+            <p class="depth-tile-body">
+              Tactics, code, music, writing — each one teaches me something about the others. Hover the nodes to see the connections.
+            </p>
+            <canvas id="constellation" aria-hidden="true"></canvas>
+          </article>
         </div>
+
       </div>
     </section>
 
-    <Stats />
-    <Skills />
-    <AboutStrip />
-    <WelcomeCTA />
+    <!-- ============================================
+         SCENE 4 — LATEST TRANSMISSIONS + HIDDEN
+         Trigger zones live here, disguised as ambient UI.
+         ============================================ -->
+    <section class="scene-transmission" data-scene="4">
+      <div class="scene-inner">
+
+        <div class="scene-header">
+          <div class="scene-number">04 / TRANSMISSION</div>
+          <h2 class="scene-heading">Latest <em>drops</em>.</h2>
+          <p class="scene-lede">
+            Fresh from the writing queue.
+          </p>
+        </div>
+
+        {latestPost && (
+          <article class="featured-post signal-magnetic">
+            <div class="featured-post-meta">
+              <span class="featured-post-cat">{latestPost.data.category}</span>
+              <span class="featured-post-date">{latestPost.data.date}</span>
+              <span class="featured-post-tag">LATEST TRANSMISSION</span>
+            </div>
+            <h3 class="featured-post-title">
+              <a href={`/blog/${latestPost.slug}`}>{latestPost.data.title}</a>
+            </h3>
+            <p class="featured-post-excerpt">{latestPost.data.excerpt}</p>
+            <a href={`/blog/${latestPost.slug}`} class="featured-post-arrow">
+              Read the full transmission
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </article>
+        )}
+
+        <div class="transmission-list">
+          {recentPosts.slice(1).map(post => (
+            <a href={`/blog/${post.slug}`} class="transmission-item signal-magnetic">
+              <div class="transmission-item-meta">
+                <span>{post.data.category}</span>
+                <span>·</span>
+                <span>{post.data.date}</span>
+              </div>
+              <div class="transmission-item-title">{post.data.title}</div>
+              <div class="transmission-item-arrow">→</div>
+            </a>
+          ))}
+          <a href="/blog" class="transmission-item transmission-item-all signal-magnetic">
+            <div class="transmission-item-meta"><span>ALL</span></div>
+            <div class="transmission-item-title">Every transmission, sorted by signal strength</div>
+            <div class="transmission-item-arrow">→</div>
+          </a>
+        </div>
+
+        <!-- Hidden trigger zone T04 — right side empty zone -->
+        <div class="trigger-zone" data-trigger-id="T04" aria-hidden="true"
+             style="position: absolute; top: 30%; right: 4vw; width: 100px; height: 120px;"></div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         SCENE 5 — TRANSMISSION CLOSE
+         The signal sign-off. CTA to subscribe.
+         ============================================ -->
+    <section class="scene-close" data-scene="5">
+      <div class="transmission-complete">
+
+        <div class="transmission-complete-eyebrow">END OF TRANSMISSION</div>
+
+        <h2 class="transmission-complete-heading">
+          You've tuned into the signal.<br/>
+          <em>Don't lose the frequency.</em>
+        </h2>
+
+        <p class="transmission-complete-body">
+          New broadcasts land weekly. Join and the next one comes to your inbox — football, code, music, books. No spam. Pure signal.
+        </p>
+
+        <div class="signal-cta-group">
+          <a href="/contact" class="btn-primary signal-magnetic">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Subscribe to the signal
+          </a>
+          <a href="/about" class="btn-ghost signal-magnetic">
+            About the broadcaster
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Trigger zone T05 — the actual bottom -->
+        <div class="trigger-zone" data-trigger-id="T05" aria-hidden="true"
+             style="position: absolute; bottom: 0; left: 0; right: 0; height: 40px;"></div>
+      </div>
+    </section>
 
   </main>
 
   <style>
-    /* Page specific layout */
-    .home-main {
-      padding-top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-    }
-    :global(.home-main > *) {
-      margin-top: 0 !important;
-      margin-bottom: 0 !important;
-    }
-    .featured-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    @media (max-width: 640px) {
-      .featured-grid { grid-template-columns: 1fr; }
+    /* ============================================
+       SCENE 2 — IDENTITY
+       ============================================ */
+    .scene-identity {
+      position: relative;
     }
 
-    .feature-card {
-      position: relative;
-      padding: 1.85rem;
-      border-radius: var(--card-radius);
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
-      overflow: hidden;
-      transform: translate3d(0, 0, 0);
-      transition:
-        transform var(--haptic-duration-out) var(--curve-haptic-recover),
-        box-shadow 320ms ease,
-        border-color 260ms ease,
-        filter 260ms ease,
-        background 260ms ease;
-      text-decoration: none;
+    .identity-paragraph {
+      font-family: var(--font-body);
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      line-height: 1.65;
       color: var(--text-color);
-      display: block;
+      max-width: 54ch;
+      margin: 0 0 1.4rem;
+      font-weight: 300;
     }
-    .feature-card:hover {
-      transform: translate3d(0, var(--haptic-lift), 0) scale(var(--haptic-hover-scale));
-      transition-timing-function: var(--curve-haptic-overshoot);
-      box-shadow: var(--glass-shadow-hover);
-      border-color: var(--accent-1);
-      filter: saturate(var(--surface-contrast-hover));
+
+    .identity-paragraph strong {
+      color: var(--accent-1);
+      font-weight: 600;
     }
-    .feature-card:active {
-      transform: translate3d(0, calc(var(--haptic-lift) * 0.35), 0) scale(var(--haptic-press-scale));
-      transition-duration: var(--haptic-duration-in);
-      transition-timing-function: var(--curve-haptic-compress);
-      filter: saturate(var(--surface-contrast-press));
+
+    .identity-paragraph em {
+      color: var(--text-color);
+      font-style: italic;
+      font-weight: 400;
     }
-    .feature-card-accent {
+
+    .identity-stats {
+      margin-top: 3.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--bg-color) 50%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+    }
+
+    .identity-stat {
+      text-align: left;
+      padding: 0.75rem;
+      position: relative;
+    }
+
+    .identity-stat::before {
+      content: '';
       position: absolute;
-      top: 0; right: 0;
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      filter: blur(50px);
-      opacity: 0.2;
-      background: var(--accent-1);
-      transition: all 0.4s ease;
+      top: 0.75rem;
+      left: 0;
+      width: 2px;
+      height: calc(100% - 1.5rem);
+      background: var(--accent-local, var(--accent-1));
+      border-radius: 2px;
     }
-    .feature-card:hover .feature-card-accent {
-      opacity: 0.4;
-      transform: scale(1.3);
+
+    .identity-stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1;
+      color: var(--accent-local, var(--accent-1));
+      letter-spacing: -0.04em;
+      margin-bottom: 0.4rem;
+      margin-left: 0.8rem;
     }
-    .feature-card-tag {
+
+    .identity-stat-label {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--accent-1);
-      margin-bottom: 0.75rem;
+      color: var(--text-color);
+      margin-bottom: 0.2rem;
+      margin-left: 0.8rem;
+    }
+
+    .identity-stat-sub {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--muted-text);
+      margin-left: 0.8rem;
+    }
+
+    /* ============================================
+       SCENE 3 — LAYERS
+       ============================================ */
+    .scene-layers {
+      position: relative;
+    }
+
+    .constellation-tile {
+      position: relative;
+      min-height: 260px;
+    }
+
+    #constellation {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .constellation-tile > * { position: relative; z-index: 1; }
+
+    /* ============================================
+       SCENE 4 — TRANSMISSION
+       ============================================ */
+    .scene-transmission {
+      position: relative;
+    }
+
+    .featured-post {
+      padding: clamp(2rem, 4vw, 3rem);
+      border-radius: var(--radius-lg);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform 380ms var(--ease-spring),
+        border-color 380ms ease,
+        box-shadow 380ms ease;
+    }
+
+    .featured-post:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent-1) 40%, var(--glass-border));
+      box-shadow: var(--glass-shadow-hover);
+    }
+
+    .featured-post::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-1) 24%, transparent), transparent 70%);
+      filter: blur(60px);
+      opacity: 0.7;
+      pointer-events: none;
+      transition: opacity 400ms ease, transform 400ms ease;
+    }
+
+    .featured-post:hover::before {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .featured-post-meta {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted-text);
     }
-    .feature-card-tag::before {
-      content: '';
-      width: 20px;
-      height: 1px;
-      background: var(--accent-1);
+
+    .featured-post-cat {
+      color: var(--accent-1);
+      padding: 0.2rem 0.7rem;
+      border: 1px solid color-mix(in srgb, var(--accent-1) 40%, transparent);
+      border-radius: 100px;
+      letter-spacing: 0.16em;
     }
-    .feature-card h3 {
+
+    .featured-post-tag {
+      margin-left: auto;
+      color: var(--accent-2);
+    }
+
+    .featured-post-title {
       font-family: var(--font-display);
-      font-size: 1.3rem;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
       font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: var(--text-color);
+      line-height: 1.1;
+      margin: 0 0 1rem;
+      letter-spacing: -0.025em;
     }
-    .feature-card-arrow {
-      margin-top: 1.5rem;
+
+    .featured-post-title a {
+      color: var(--text-color);
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      background-size: 0% 2px;
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: background-size 380ms var(--ease-out-expo);
+    }
+
+    .featured-post-title a:hover {
+      background-size: 100% 2px;
+    }
+
+    .featured-post-excerpt {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin: 0 0 1.5rem;
+      max-width: 62ch;
+    }
+
+    .featured-post-arrow {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       font-family: var(--font-display);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--accent-1);
-      transition: gap 240ms var(--curve-haptic-recover), filter 240ms ease;
-    }
-    .feature-card:hover .feature-card-arrow {
-      gap: 0.72rem;
-      filter: saturate(var(--surface-contrast-hover));
-    }
-    .newsletter-home-section {
-      margin: 0.15rem 0 0.35rem;
-      padding: 0;
-    }
-    .newsletter-home-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      padding: 2rem;
-    }
-    .newsletter-home-accent {
-      width: 180px;
-      height: 180px;
-      opacity: 0.16;
-    }
-    .newsletter-home-copy h3 {
-      margin-bottom: 0.6rem;
-      font-size: 1.45rem;
-    }
-    .newsletter-home-copy p {
-      margin: 0;
-      max-width: 760px;
-      line-height: 1.65;
-      font-size: 0.95rem;
-    }
-    .newsletter-home-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-    :global(.home-main .stats-section) {
-      padding: 1rem 0 !important;
-    }
-    :global(.home-main .about-strip) {
-      padding: 1.1rem 0 !important;
-    }
-    :global(.home-main .section) {
-      margin-top: 0.2rem !important;
-      margin-bottom: 0.35rem !important;
+      text-decoration: none;
+      transition: gap 280ms var(--ease-spring);
     }
 
+    .featured-post-arrow:hover { gap: 0.8rem; }
+
+    .transmission-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .transmission-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1.1rem 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      background: color-mix(in srgb, var(--bg-color) 30%, transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--text-color);
+      text-decoration: none;
+      transition:
+        background 280ms ease,
+        border-color 280ms ease,
+        transform 280ms var(--ease-spring),
+        padding 280ms ease;
+    }
+
+    .transmission-item:hover {
+      background: color-mix(in srgb, var(--accent-1) 8%, var(--glass-bg));
+      border-color: color-mix(in srgb, var(--accent-1) 30%, transparent);
+      transform: translateX(6px);
+      padding-left: 1.75rem;
+    }
+
+    .transmission-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-1);
+      white-space: nowrap;
+      min-width: 180px;
+    }
+
+    .transmission-item-meta span:first-child { font-weight: 500; }
+
+    .transmission-item-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .transmission-item-arrow {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--accent-1);
+      transition: transform 280ms var(--ease-spring);
+    }
+
+    .transmission-item:hover .transmission-item-arrow {
+      transform: translateX(4px);
+    }
+
+    .transmission-item-all {
+      margin-top: 0.3rem;
+      border-color: color-mix(in srgb, var(--accent-2) 30%, transparent);
+      background: color-mix(in srgb, var(--accent-2) 8%, var(--glass-bg));
+    }
+
+    .transmission-item-all .transmission-item-meta { color: var(--accent-2); }
+    .transmission-item-all .transmission-item-arrow { color: var(--accent-2); }
+
+    /* ============================================
+       SCENE 5 — CLOSE
+       ============================================ */
+    .scene-close {
+      position: relative;
+    }
+
+    .transmission-complete-heading em {
+      color: var(--accent-1);
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .scene-close .signal-cta-group {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .scene-close .btn-primary,
+    .scene-close .btn-ghost {
+      padding: 1rem 1.7rem;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      text-decoration: none;
+      transition: transform 280ms var(--ease-spring), box-shadow 280ms ease, border-color 280ms ease, background 280ms ease;
+    }
+
+    .scene-close .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: var(--btn-primary-text);
+      box-shadow: var(--btn-primary-shadow);
+      border: 1px solid transparent;
+    }
+
+    .scene-close .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--btn-primary-shadow-hover);
+    }
+
+    .scene-close .btn-ghost {
+      background: var(--btn-ghost-bg);
+      border: 1px solid var(--btn-ghost-border);
+      color: var(--text-color);
+    }
+
+    .scene-close .btn-ghost:hover {
+      background: var(--btn-ghost-hover-bg);
+      border-color: var(--btn-ghost-hover-border);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
     @media (max-width: 768px) {
-      .home-main {
-        padding-top: 0.5rem !important;
-        padding-bottom: 1.25rem !important;
-        gap: 0.4rem !important;
+      .identity-stats { padding: 1.5rem; gap: 0.5rem; }
+      .transmission-item {
+        grid-template-columns: 1fr auto;
+        padding: 1rem;
+        gap: 0.6rem;
       }
-      .section { margin-bottom: 0.45rem !important; margin-top: 0.35rem !important; }
-      .section-heading { margin-bottom: 1.25rem !important; font-size: 2.2rem !important; }
-      .featured-grid { gap: 1rem !important; }
-      .newsletter-home-section { margin: 0.1rem 0 0.3rem !important; padding: 0 !important; }
-      :global(.home-main .stats-section) { padding: 0.7rem 0 !important; }
-      :global(.home-main .about-strip) { padding: 0.8rem 0 !important; }
-      .newsletter-home-card {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1.5rem;
+      .transmission-item-meta {
+        grid-column: 1 / -1;
+        min-width: 0;
+        font-size: 0.6rem;
       }
+      .transmission-item-title { grid-column: 1; font-size: 0.95rem; }
+      .featured-post-meta { flex-wrap: wrap; gap: 0.5rem; }
+      .featured-post-tag { margin-left: 0; }
     }
   </style>
 
   <script is:inline>
-    // 3D TILT CARDS
+    /*
+      Constellation canvas — force-directed graph of interests.
+      Lives inside the depth-tile-wide tile. Nodes repel each other,
+      edges pull connected nodes toward natural rest distance.
+    */
     (() => {
-      'use strict';
+      const canvas = document.getElementById('constellation');
+      if (!canvas) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-      if (reducedMotion || !hoverCapable) return;
+      const ctx = canvas.getContext('2d', { alpha: true });
+      const nodes = [
+        { id: 'football', label: 'Football', x: 0.22, y: 0.32, mass: 1.4 },
+        { id: 'tactics', label: 'Tactics', x: 0.42, y: 0.18, mass: 1.0 },
+        { id: 'code', label: 'Code', x: 0.66, y: 0.28, mass: 1.2 },
+        { id: 'python', label: 'Python', x: 0.84, y: 0.48, mass: 0.9 },
+        { id: 'music', label: 'Music', x: 0.18, y: 0.72, mass: 1.1 },
+        { id: 'guitar', label: 'Guitar', x: 0.38, y: 0.82, mass: 0.8 },
+        { id: 'writing', label: 'Writing', x: 0.58, y: 0.72, mass: 1.3 },
+        { id: 'books', label: 'Books', x: 0.78, y: 0.84, mass: 1.0 },
+      ];
 
-      document.querySelectorAll('.tilt-card').forEach(card => {
-        if (card.dataset.tiltBound === 'true') return;
-        card.dataset.tiltBound = 'true';
+      const edges = [
+        ['football', 'tactics'], ['tactics', 'code'], ['code', 'python'],
+        ['music', 'guitar'], ['writing', 'books'], ['tactics', 'writing'],
+        ['music', 'writing'], ['code', 'writing'], ['python', 'football'],
+      ];
 
-        card.addEventListener('mousemove', e => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left, y = e.clientY - rect.top;
-          const centerX = rect.width / 2, centerY = rect.height / 2;
-          const rotateX = (y - centerY) / centerY * -8, rotateY = (x - centerX) / centerX * 8;
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-          card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
-          card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+      const edgeSet = new Set(edges.map(([a, b]) => `${a}|${b}`));
+
+      let w = 0, h = 0;
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvas.getBoundingClientRect();
+        w = rect.width; h = rect.height;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      new ResizeObserver(resize).observe(canvas);
+
+      // Convert relative coords to absolute
+      let pos = nodes.map(n => ({ x: n.x * w, y: n.y * h, vx: 0, vy: 0, ref: n }));
+
+      let mx = -1000, my = -1000;
+      canvas.parentElement.addEventListener('mousemove', (e) => {
+        const r = canvas.getBoundingClientRect();
+        mx = e.clientX - r.left;
+        my = e.clientY - r.top;
+      });
+      canvas.parentElement.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+
+      function physics(dt) {
+        const REPULSE = 600;
+        const REST = Math.min(w, h) * 0.22;
+        const SPRING = 0.008;
+        const DAMP = 0.88;
+
+        // Re-project relative coords if size changed dramatically
+        pos.forEach(p => {
+          // Keep node near relative target
+          const tx = p.ref.x * w;
+          const ty = p.ref.y * h;
+          p.vx += (tx - p.x) * 0.002;
+          p.vy += (ty - p.y) * 0.002;
         });
-        card.addEventListener('mouseleave', () => card.style.transform = '');
+
+        // Repulsion
+        for (let i = 0; i < pos.length; i++) {
+          for (let j = i + 1; j < pos.length; j++) {
+            const a = pos[i], b = pos[j];
+            const dx = b.x - a.x, dy = b.y - a.y;
+            const d = Math.hypot(dx, dy) + 0.0001;
+            const f = REPULSE / (d * d);
+            const fx = (dx / d) * f, fy = (dy / d) * f;
+            a.vx -= fx / a.ref.mass;
+            a.vy -= fy / a.ref.mass;
+            b.vx += fx / b.ref.mass;
+            b.vy += fy / b.ref.mass;
+          }
+        }
+
+        // Edge springs
+        for (const [aId, bId] of edges) {
+          const a = pos.find(p => p.ref.id === aId);
+          const b = pos.find(p => p.ref.id === bId);
+          if (!a || !b) continue;
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const d = Math.hypot(dx, dy);
+          const delta = d - REST;
+          const fx = (dx / d) * delta * SPRING;
+          const fy = (dy / d) * delta * SPRING;
+          a.vx += fx / a.ref.mass;
+          a.vy += fy / a.ref.mass;
+          b.vx -= fx / b.ref.mass;
+          b.vy -= fy / b.ref.mass;
+        }
+
+        // Mouse repulsion
+        pos.forEach(p => {
+          const dx = p.x - mx, dy = p.y - my;
+          const d = Math.hypot(dx, dy);
+          if (d < 120) {
+            const push = (1 - d / 120) * 3;
+            p.vx += (dx / (d + 0.001)) * push;
+            p.vy += (dy / (d + 0.001)) * push;
+          }
+          p.vx *= DAMP; p.vy *= DAMP;
+          p.x += p.vx; p.y += p.vy;
+          // Contain
+          p.x = Math.max(30, Math.min(w - 30, p.x));
+          p.y = Math.max(30, Math.min(h - 30, p.y));
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        // Edges
+        for (const [aId, bId] of edges) {
+          const a = pos.find(p => p.ref.id === aId);
+          const b = pos.find(p => p.ref.id === bId);
+          if (!a || !b) continue;
+          const d = Math.hypot(b.x - a.x, b.y - a.y);
+          const t = Math.max(0, Math.min(1, 1 - Math.abs(d - (Math.min(w, h) * 0.22)) / 100));
+          ctx.strokeStyle = `rgba(76, 201, 240, ${0.15 + t * 0.3})`;
+          ctx.lineWidth = 0.5 + t * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+
+        // Nodes
+        for (const p of pos) {
+          const r = 4 + p.ref.mass * 2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r + 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(76, 201, 240, 0.08)';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = '#4cc9f0';
+          ctx.fill();
+
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillStyle = 'rgba(200, 220, 255, 0.7)';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.ref.label, p.x, p.y - r - 6);
+        }
+      }
+
+      let lastT = performance.now();
+      function loop(now) {
+        const dt = Math.min(32, now - lastT);
+        lastT = now;
+        if (!reduced) physics(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    })();
+
+    // --- Trigger T04 — the invisible zone in scene 4 ---
+    (() => {
+      const zone = document.querySelector('.trigger-zone[data-trigger-id="T04"]');
+      if (!zone || !window.BTB?.signal?.state) return;
+      let timer = null;
+      zone.addEventListener('mouseenter', () => {
+        timer = setTimeout(() => {
+          if (window.BTB.signal.state.activateTrigger('T04')) {
+            const label = document.createElement('div');
+            label.textContent = 'these aren\'t separate';
+            label.style.cssText = `
+              position: absolute;
+              top: 50%;
+              right: 12vw;
+              transform: translateY(-50%);
+              font-family: var(--font-mono);
+              font-size: 0.75rem;
+              letter-spacing: 0.18em;
+              color: var(--accent-2);
+              background: color-mix(in srgb, var(--bg-color) 80%, transparent);
+              backdrop-filter: blur(8px);
+              padding: 0.5rem 0.8rem;
+              border-radius: 6px;
+              border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+              opacity: 0;
+              transition: opacity 600ms ease;
+              z-index: 30;
+              pointer-events: none;
+            `;
+            zone.parentElement.appendChild(label);
+            requestAnimationFrame(() => { label.style.opacity = '1'; });
+            setTimeout(() => {
+              label.style.opacity = '0';
+              setTimeout(() => label.remove(), 800);
+            }, 3000);
+          }
+        }, 500);
+      });
+      zone.addEventListener('mouseleave', () => {
+        if (timer) clearTimeout(timer);
+      });
+    })();
+
+    // --- Trigger T05 — 100% scroll ---
+    (() => {
+      if (!window.BTB?.signal?.state) return;
+      window.addEventListener('btb:frame', () => {
+        const p = window.BTB.signal.state.get('scrollProgress');
+        if (p > 0.98) {
+          window.BTB.signal.state.activateTrigger('T05');
+        }
       });
     })();
   </script>

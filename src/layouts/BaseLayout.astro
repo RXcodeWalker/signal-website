@@ -1,16 +1,24 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const { title = "Beyond The Basics", description = "Football analysis, coding projects, and growth insights." } = Astro.props;
+const {
+  title = "Signal // BTB",
+  description = "A transmission from a mind that doesn't sit still.",
+  hideNav = false,
+  hideFooter = false,
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-gl="pending" data-probe="pending">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#060c1c">
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:type" content="website">
@@ -19,60 +27,42 @@ const { title = "Beyond The Basics", description = "Football analysis, coding pr
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" href="/favicon.ico" />
 
-  <!-- Google Fonts: Premium Typography -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Synchronous state bootstrap: runs before first paint so
+       temporal identity + behavioral memory are applied in time. -->
+  <script is:inline src="/js/engine/state.js"></script>
+
+  <ClientRouter />
   <slot name="head" />
 </head>
-<body class="loaded">
+<body class="loaded" data-theme-ready>
 
-  <!-- Loader (Temporarily disabled)
-  <div id="loader">
-    <div class="loader-brand">Beyond The Basics</div>
-    <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
-    <div class="loader-text">Initializing ...</div>
-  </div> -->
+  <!-- WebGL distortion canvas (fixed, behind everything) -->
+  <canvas id="signal-canvas" aria-hidden="true"></canvas>
 
-  <!-- Custom Cursor managed by /js/utils/cursor.js -->
+  <!-- Full-screen noise overlay (drives grain texture) -->
+  <div class="signal-noise" aria-hidden="true"></div>
 
-  <!-- Progress Bar -->
-  <div id="progress-bar"></div>
+  <!-- Scanline CRT overlay (low opacity, atmosphere only) -->
+  <div class="signal-scanlines" aria-hidden="true"></div>
 
-  <!-- Animated Background Blobs -->
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
+  <!-- Scan line sweep (animated during scene entry) -->
+  <div class="signal-scan-line" aria-hidden="true"></div>
 
-  <Navbar />
+  <!-- Probe cursor (created by probe.js if supported) -->
+
+  <!-- Signal state anchor (hidden) -->
+  <div id="signal-state" aria-hidden="true"></div>
+
+  {!hideNav && <Navbar />}
 
   <slot />
 
-  <Footer />
-
-  <!-- Color Palette Switcher -->
-  <div class="palette-container">
-    <button class="palette-toggle" id="palette-toggle" aria-label="Toggle color palette">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle>
-        <circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle>
-        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
-      </svg>
-    </button>
-    <div class="palette-panel" id="palette-panel">
-      <button data-palette="arctic" class="palette-btn"></button>
-      <button data-palette="neon" class="palette-btn"></button>
-      <button data-palette="sunset" class="palette-btn"></button>
-      <button data-palette="emerald" class="palette-btn"></button>
-      <button data-palette="midnight" class="palette-btn"></button>
-      <button data-palette="ocean" class="palette-btn"></button>
-      <button data-palette="rose" class="palette-btn"></button>
-      <button data-palette="gold" class="palette-btn"></button>
-      <button data-palette="lavender" class="palette-btn"></button>
-      <button data-palette="crimson" class="palette-btn"></button>
-    </div>
-  </div>
+  {!hideFooter && <Footer />}
 
   <!-- Reticle (positioned by signal.js, never created at runtime) -->
   <div id="reticle" aria-hidden="true">
@@ -82,27 +72,28 @@ const { title = "Beyond The Basics", description = "Football analysis, coding pr
     <span class="ret-corner ret-br"></span>
   </div>
 
-  <!-- Global Scripts -->
+  <!-- Awareness lines (hidden debug-style overlay text) -->
+  <div class="awareness-line" data-awareness-line="1" aria-hidden="true">// signal.tuned = true</div>
+  <div class="awareness-line" data-awareness-line="2" aria-hidden="true">// presence.detected</div>
+  <div class="awareness-line" data-awareness-line="3" aria-hidden="true">// transmission.depth &gt; 0.70</div>
+  <div class="awareness-line" data-awareness-line="4" aria-hidden="true">// observer.observed</div>
+
+  <!-- ============================================================
+       SIGNAL ENGINE — loaded in strict dependency order
+       state.js is already in <head>. These come after content.
+       ============================================================ -->
+  <script is:inline src="/js/engine/signal-gl.js"></script>
+  <script is:inline src="/js/engine/probe.js"></script>
+  <script is:inline src="/js/engine/physics.js"></script>
+  <script is:inline src="/js/engine/awareness.js"></script>
+  <script is:inline src="/js/engine/audio-engine.js"></script>
+
+  <!-- Legacy scripts (theme toggle, nav, ambient audio, konami, interactions) -->
   <script is:inline src="/js/theme.js"></script>
   <script is:inline src="/js/scroll.js"></script>
   <script is:inline src="/js/sound.js"></script>
-  <script is:inline src="/js/invincibles.js"></script>
   <script is:inline src="/js/konami.js"></script>
-  <script is:inline src="/js/utils/cursor.js"></script>
   <script is:inline src="/js/signal.js"></script>
 
-  <script is:inline>
-    /* Global Loader logic (Temporarily disabled)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loader = document.getElementById('loader');
-        if (loader) {
-          loader.classList.add('hide');
-          setTimeout(() => loader.remove(), 700);
-        }
-      }, 1400);
-    });
-    */
-  </script>
 </body>
 </html>
